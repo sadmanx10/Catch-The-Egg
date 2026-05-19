@@ -348,3 +348,283 @@ void applyCatchEffect()
 
     spawnObject();
 }
+void resetGame()
+{
+    score = 0;
+    timeLeft = 25;
+    basketX = 380;
+    basketWidth = 120;
+    chickenX = 100;
+    chickenSpeed = 3;
+    globalFallSpeed = 4;
+    slowTimeLeft = 0;
+    bigBasketTimeLeft = 0;
+    brokenEggVisible = 0;
+    brokenEggTimer = 0;
+    spawnObject();
+}
+
+void drawHUD()
+{
+    char text[100];
+
+    glColor3f(1, 1, 1);
+
+    sprintf(text, "Score: %d", score);
+    drawText(20, 620, text);
+
+    sprintf(text, "Time: %d", timeLeft);
+    drawText(750, 620, text);
+
+    sprintf(text, "Speed: %.1f", globalFallSpeed);
+    drawText(370, 620, text);
+}
+
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    drawBackground();
+
+    if (gameState == MENU)
+    {
+        glColor3f(0, 1, 0);
+        drawText(330, 450, "CATCH THE EGGS");
+        drawText(310, 390, "Press ENTER to Start");
+        drawText(310, 350, "Press H for Help");
+        drawText(310, 310, "Press ESC to Exit");
+    }
+    else if (gameState == HELP)
+    {
+        glColor3f(0, 1, 0);
+        drawText(250, 520, "HELP MENU");
+        drawText(150, 460, "Left/Right Arrow: Move Basket");
+        drawText(150, 420, "Mouse Move: Control Basket");
+        drawText(150, 380, "P: Pause or Resume");
+        drawText(150, 340, "Normal Egg = +1");
+        drawText(150, 310, "Blue Egg = +5");
+        drawText(150, 280, "Golden Egg = +10");
+        drawText(150, 250, "Poop = -10");
+        drawText(150, 220, "Blocks give perks: Big Basket, Slow Speed, Extra Time");
+        drawText(150, 170, "Press M to go back to Menu");
+    }
+    else if (gameState == PLAYING || gameState == PAUSED)
+    {
+        drawHUD();
+        drawBambooStick();
+        drawChicken();
+        drawFallingObject();
+        drawBrokenEgg();
+        drawBasket();
+
+        if (gameState == PAUSED)
+        {
+            glColor3f(1, 0, 0);
+            drawText(400, 330, "PAUSED");
+            drawText(330, 290, "Press P to Resume");
+        }
+    }
+    else if (gameState == GAME_OVER)
+    {
+        char text[100];
+
+        glColor3f(1, 0, 0);
+        drawText(390, 390, "GAME OVER");
+
+        glColor3f(1, 1, 1);
+        sprintf(text, "Final Score: %d", score);
+        drawText(370, 340, text);
+
+        sprintf(text, "High Score: %d", highScore);
+        drawText(370, 310, text);
+
+        drawText(300, 250, "Press ENTER to Play Again");
+        drawText(300, 220, "Press M for Menu");
+        drawText(300, 190, "Press ESC to Exit");
+    }
+
+    glutSwapBuffers();
+}
+
+void update(int value)
+{
+    if (gameState == PLAYING)
+    {
+        chickenX += chickenSpeed;
+
+        if (chickenX > 780 || chickenX < 100)
+            chickenSpeed *= -1;
+
+        float currentSpeed = obj.speed;
+
+        if (slowTimeLeft > 0)
+            currentSpeed = obj.speed * 0.5;
+
+        obj.y -= currentSpeed;
+
+        if (obj.y <= basketY + basketHeight + 15 &&
+            obj.x >= basketX &&
+            obj.x <= basketX + basketWidth)
+        {
+            applyCatchEffect();
+        }
+
+        if (obj.y < 80)
+        {
+            playMissSound();
+            showBrokenEgg(obj.x);
+            spawnObject();
+        }
+
+        if (brokenEggVisible)
+        {
+            brokenEggTimer--;
+
+            if (brokenEggTimer <= 0)
+                brokenEggVisible = 0;
+        }
+    }
+
+    glutPostRedisplay();
+    glutTimerFunc(25, update, 0);
+}
+
+void gameTimer(int value)
+{
+    if (gameState == PLAYING)
+    {
+        timeLeft--;
+
+        if (slowTimeLeft > 0)
+            slowTimeLeft--;
+
+        if (bigBasketTimeLeft > 0)
+        {
+            bigBasketTimeLeft--;
+
+            if (bigBasketTimeLeft == 0)
+                basketWidth = 120;
+        }
+
+        if (timeLeft <= 0)
+        {
+            gameState = GAME_OVER;
+
+            if (score > highScore)
+                highScore = score;
+        }
+    }
+
+    glutTimerFunc(1000, gameTimer, 0);
+}
+
+void increaseEggSpeed(int value)
+{
+    if (gameState == PLAYING)
+    {
+        globalFallSpeed += 0.7;
+
+        if (globalFallSpeed > 12)
+            globalFallSpeed = 12;
+
+        obj.speed = globalFallSpeed;
+    }
+
+    glutTimerFunc(10000, increaseEggSpeed, 0);
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+    if (key == 13)
+    {
+        resetGame();
+        gameState = PLAYING;
+    }
+
+    if (key == 'p' || key == 'P')
+    {
+        if (gameState == PLAYING)
+            gameState = PAUSED;
+        else if (gameState == PAUSED)
+            gameState = PLAYING;
+    }
+
+    if (key == 'h' || key == 'H')
+        gameState = HELP;
+
+    if (key == 'm' || key == 'M')
+        gameState = MENU;
+
+    if (key == 27)
+        exit(0);
+}
+
+void specialKeyboard(int key, int x, int y)
+{
+    if (gameState == PLAYING)
+    {
+        if (key == GLUT_KEY_LEFT)
+            basketX -= 30;
+
+        if (key == GLUT_KEY_RIGHT)
+            basketX += 30;
+
+        if (basketX < 0)
+            basketX = 0;
+
+        if (basketX > width - basketWidth)
+            basketX = width - basketWidth;
+    }
+}
+
+void mouseMove(int x, int y)
+{
+    if (gameState == PLAYING)
+    {
+        basketX = x - basketWidth / 2;
+
+        if (basketX < 0)
+            basketX = 0;
+
+        if (basketX > width - basketWidth)
+            basketX = width - basketWidth;
+    }
+}
+
+void init()
+{
+    glClearColor(0.45, 0.75, 0.95, 1);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluOrtho2D(0, width, 0, height);
+}
+
+int main(int argc, char **argv)
+{
+    srand(time(0));
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Catch The Eggs Game");
+
+    init();
+
+    spawnObject();
+
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutSpecialFunc(specialKeyboard);
+    glutPassiveMotionFunc(mouseMove);
+
+    glutTimerFunc(25, update, 0);
+    glutTimerFunc(1000, gameTimer, 0);
+    glutTimerFunc(10000, increaseEggSpeed, 0);
+
+    glutMainLoop();
+
+    return 0;
+}
