@@ -8,10 +8,10 @@
 	<windows.h>
 	<mmsystem.h>
 
-1770389893 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\glut.h
+1426328128 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\glut.h
 	"freeglut_std.h"
 
-1770389893 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\freeglut_std.h
+1426328128 c:\program files\codeblocks\mingw\x86_64-w64-mingw32\include\gl\freeglut_std.h
 	<windows.h>
 	<EGL/egl.h>
 	<GLES/gl.h>
@@ -918,6 +918,15 @@
 	<sys/timeb.h>
 
 1779226021 source:f:\git\catch-the-egg\catch-the-egg\main.cpp
+	<GL/glut.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<time.h>
+	<windows.h>
+	<mmsystem.h>
+
+1779225885 source:c:\users\user\documents\github\catch-the-egg\main.cpp
 	<GL/glut.h>
 	<stdio.h>
 	<stdlib.h>

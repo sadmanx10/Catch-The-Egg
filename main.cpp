@@ -59,16 +59,6 @@ void playMissSound()
      PlaySound(TEXT("F:\\com graphics\\catch the egg\\miss.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
 
-/*void playCatchSound()
-{
-    PlaySound(TEXT("C:\\Users\\USER\\Desktop\\video\\murgi\\catch.wav"), NULL, SND_FILENAME | SND_ASYNC);
-}
-
-void playMissSound()
-{
-    PlaySound(TEXT("C:\\Users\\USER\\Desktop\\video\\murgi\\miss.wav"), NULL, SND_FILENAME | SND_ASYNC);
-}
-*/
 void drawText(float x, float y, const char *text)
 {
     glRasterPos2f(x, y);
