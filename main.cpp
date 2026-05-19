@@ -341,7 +341,7 @@ void applyCatchEffect()
 void resetGame()
 {
     score = 0;
-    timeLeft = 25;
+    timeLeft = 30;
     basketX = 380;
     basketWidth = 120;
     chickenX = 100;
