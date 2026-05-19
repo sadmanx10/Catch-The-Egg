@@ -378,7 +378,7 @@ void display()
 
     if (gameState == MENU)
     {
-        glColor3f(0, 1, 0);
+        glColor3f(0, 0, 0);
         drawText(330, 450, "CATCH THE EGGS");
         drawText(310, 390, "Press ENTER to Start");
         drawText(310, 350, "Press H for Help");
@@ -386,7 +386,7 @@ void display()
     }
     else if (gameState == HELP)
     {
-        glColor3f(0, 1, 0);
+        glColor3f(0, 0, 0);
         drawText(250, 520, "HELP MENU");
         drawText(150, 460, "Left/Right Arrow: Move Basket");
         drawText(150, 420, "Mouse Move: Control Basket");
