@@ -49,14 +49,14 @@ void playCatchSound()
 {
     waveOutSetVolume(0, MAKELONG(15000, 15000));
 
-    PlaySound(TEXT("F:\\com graphics\\catch the egg\\catch.wav"), NULL, SND_FILENAME | SND_ASYNC);
+    PlaySound(TEXT("C:\\Users\\USER\\Documents\\GitHub\\Catch-The-Egg\\catch.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
 
 void playMissSound()
 {
     waveOutSetVolume(0, MAKELONG(12000, 12000));
 
-     PlaySound(TEXT("F:\\com graphics\\catch the egg\\miss.wav"), NULL, SND_FILENAME | SND_ASYNC);
+     PlaySound(TEXT("C:\\Users\\USER\\Documents\\GitHub\\Catch-The-Egg\\miss.wav"), NULL, SND_FILENAME | SND_ASYNC);
 }
 
 void drawText(float x, float y, const char *text)
